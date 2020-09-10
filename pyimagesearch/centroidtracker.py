@@ -1,6 +1,7 @@
 # import the necessary packages
 from collections import OrderedDict
 import numpy as np
+from  scipy.spatial import distance as dist
 
 class CentroidTracker():
 	def __init__(self, maxDisappeared=50):
@@ -77,11 +78,9 @@ class CentroidTracker():
 			# centroids and input centroids, respectively -- our
 			# goal will be to match an input centroid to an existing
 			# object centroid
-			dist = (np.array(objectCentroids)- inputCentroids)**2
-			dist = np.sum(dist, axis=1)
-			D = np.sqrt(dist)
 
-			#D = dist.cdist(np.array(objectCentroids), inputCentroids)
+
+			D = dist.cdist(np.array(objectCentroids), inputCentroids)
 
 			# in order to perform this matching we must (1) find the
 			# smallest value in each row and then (2) sort the row

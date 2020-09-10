@@ -1,5 +1,5 @@
 from pyimagesearch.centroidtracker import CentroidTracker
-from imutils.video import VideoStream
+from imutils.video import FileVideoStream
 import numpy as np
 import argparse
 import imutils
@@ -22,11 +22,12 @@ print("[INFO] loading model...")
 net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
+vs = FileVideoStream('faces.mp4').start()
 time.sleep(2.0)
 
 while True:
 	# read the next frame from the video stream and resize it
+
 	frame = vs.read()
 	frame = imutils.resize(frame, width=400)
 
@@ -42,6 +43,7 @@ while True:
 	net.setInput(blob)
 	detections = net.forward()
 	rects = []
+
 
     # loop over the detections
 	for i in range(0, detections.shape[2]):
@@ -64,14 +66,24 @@ while True:
 	objects = ct.update(rects)
 
 
+
     # loop over the tracked objects
-	for (objectID, centroid) in objects.items():
+	#for (objectID, centroid) in objects.items():
 		# draw both the ID of the object and the centroid of the
 		# object on the output frame
-		text = "ID {}".format(objectID)
-		cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
+		#text = "ID {}".format(objectID)
+		#cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
+			#cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+		#cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
+
+	org = (0, 10)
+	font = cv2.FONT_HERSHEY_SIMPLEX
+	fontScale = 0.5
+	color = (0,255, 0)
+	thickness = 1
+	text="Count:" + str(len(objects))
+	frame =cv2.putText(frame,text,org,font,
+                   fontScale, color, thickness, cv2.LINE_AA)
 
         # show the output frame
 	cv2.imshow("Frame", frame)
